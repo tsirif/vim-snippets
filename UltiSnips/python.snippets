@@ -207,7 +207,7 @@ def write_init_body(args, parents, snip):
 
 	# for p in parents:
 	#   snip += p + ".__init__(self)"
-	snip += "super(self, " + classname +").__init__()"
+	snip += "super("+ classname +", self).__init__()"
 
 	if parents:
 		snip.rv += '\n' + snip.mkline('', indent='')
