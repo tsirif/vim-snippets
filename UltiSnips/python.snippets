@@ -136,6 +136,13 @@ def format_arg(arg, style):
 		return "%s : TODO" % arg
 
 
+def format_type(arg, style):
+	if style == DOXYGEN:
+		return "@type %s: TODO" % arg
+	else style:
+		return ":type %s: TODO" % arg
+	# in other styles?
+
 def format_return(style):
 	if style == DOXYGEN:
 		return "@return: TODO"
@@ -143,7 +150,6 @@ def format_return(style):
 		return ":returns: TODO"
 	elif style == GOOGLE:
 		return "Returns: TODO"
-
 
 def write_docstring_args(args, snip):
 	if not args:
@@ -161,6 +167,7 @@ def write_docstring_args(args, snip):
 	else:
 		for arg in args:
 			snip += format_arg(arg, style)
+			snip += format_type(arg, style)
 
 
 def write_google_docstring_args(args, snip):
