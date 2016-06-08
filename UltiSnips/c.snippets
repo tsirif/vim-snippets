@@ -1,8 +1,80 @@
+priority -50
+
+################################################################################
+#                           Documentation Functions                            #
+################################################################################
+
+global !p
+
+class Arg(object):
+	def __init__(self, arg):
+		self.arg = arg
+		tmp = arg.split('=')[0].split()
+		self.name = tmp[-1].strip()
+		self.type = ' '.join(tmp[:len(tmp)-1])
+
+	def __str__(self):
+		return self.name
+
+	def __unicode__(self):
+		return self.name
+
+	def get_type(self):
+		return self.type
+
+	def is_kwarg(self):
+		return '=' in self.arg
+
+
+def get_args(arglist):
+	args = [Arg(arg) for arg in arglist.split(',') if len(arg.split()) >= 2]
+	return args
+
+
+def format_arg(arg):
+		return " * \param %s [%s] TODO" % (arg, arg.get_type())
+
+
+def write_docstring_args(args, snip):
+	for arg in args:
+		snip += format_arg(arg)
+
+
+def write_method_docstring(t, snip, argi, reti):
+	"""
+	Writes a function docstring with the current style.
+
+	:param t: The values of the placeholders
+	:param snip: UltiSnips.TextObjects.SnippetUtil object instance
+	"""
+	snip.rv = ""
+	args = get_args(t[argi])
+	if args:
+		write_docstring_args(args, snip)
+	snip += r" * \return " + t[reti] +" TODO"
+
+
+def write_constructor_docstring(t, snip):
+	"""
+	Writes a function docstring with the current style.
+
+	:param t: The values of the placeholders
+	:param snip: UltiSnips.TextObjects.SnippetUtil object instance
+	"""
+	snip.rv = ""
+	snip >> 1
+	args = get_args(t[2])
+	if args:
+		snip += '/**'
+		write_docstring_args(args, snip)
+		snip += ' */'
+
+
+endglobal
+
 ###########################################################################
 #                            TextMate Snippets                            #
 ###########################################################################
-
-priority -50
 
 snippet def "#define ..."
 #define ${1}
@@ -48,10 +120,6 @@ snippet fori "for int loop (fori)"
 for (${2:int }${3:i} = 0; $3 < ${1:count}; ${4:++$3}) {
 	${VISUAL}${0}
 }
-endsnippet
-
-snippet enum "Enumeration"
-enum ${1:name} { $0 };
 endsnippet
 
 snippet guard "Include header once only guard"
@@ -130,24 +198,40 @@ endsnippet
 
 snippet st "struct"
 /**
- * @struct ${1/(\w+).*/$1/} ${2:TODO}
+ * ${1/(\w+).*/$1/} ${2:TODO}
  */
 typedef struct _${1:`!p
-snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "structname"`}
-{
+snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "structname"`} {
+	${0:/* data */}
+} $1;
+endsnippet
+
+snippet enum "Enumeration"
+/**
+ * ${1/(\w+).*/$1/} ${2:TODO}
+ */
+typedef enum _${1:`!p
+snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "enumname"`} {
 	${0:/* data */}
 } $1;
 endsnippet
 
 snippet fun "function" b
-${1:void} ${2:function_name}(${3:/*arguments*/})
+/**
+ * \details TODO
+ */
+${1:void} ${2:function_name}(${3:void*})
 {
 	${VISUAL}${0}
 }
 endsnippet
 
-snippet fund "function declaration" b
-${1:void} ${2:function_name}(${3:/*arguments*/});
+snippet fund "function declaration with documentation" b
+/**
+ * \brief ${5:TODO}`!p write_method_docstring(t, snip, 4, 3)`
+ */
+${2:GPUARRAY_PUBLIC} ${3:void} ${1:function_name}(${4:void*});
+$0
 endsnippet
 
 # vim:ft=snippets:

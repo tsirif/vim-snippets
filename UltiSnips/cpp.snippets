@@ -37,7 +37,7 @@ def get_args(arglist):
 
 
 def format_arg(arg):
-		return " * @param %s [%s] TODO" % (arg, arg.get_type())
+		return " * \param %s [%s] TODO" % (arg, arg.get_type())
 
 
 def write_docstring_args(args, snip):
@@ -45,7 +45,7 @@ def write_docstring_args(args, snip):
 		snip += format_arg(arg)
 
 
-def write_method_docstring(t, snip):
+def write_method_docstring(t, snip, argi, reti):
 	"""
 	Writes a function docstring with the current style.
 
@@ -53,10 +53,10 @@ def write_method_docstring(t, snip):
 	:param snip: UltiSnips.TextObjects.SnippetUtil object instance
 	"""
 	snip.rv = ""
-	args = get_args(t[4])
+	args = get_args(t[argi])
 	if args:
 		write_docstring_args(args, snip)
-	snip += " * @return " + t[2] +" TODO"
+	snip += r" * \return " + t[reti] +" TODO"
 
 
 def write_constructor_docstring(t, snip):
@@ -141,7 +141,7 @@ endsnippet
 
 snippet cl "class with documentation (class)" b
 /**
- * @class ${1/(\w+).*/$1/} ${5:TODO}
+ * \class ${1/(\w+).*/$1/} ${5:TODO}
  */
 class ${1:`!p
 snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "classname"`}
@@ -162,7 +162,7 @@ endsnippet
 
 snippet clp "class with documentation and pointer defs (class)" b
 /**
- * @class ${1/(\w+).*/$1/} ${5:TODO}
+ * \class ${1/(\w+).*/$1/} ${5:TODO}
  */
 class ${1:`!p
 snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "classname"`}
@@ -190,7 +190,7 @@ endsnippet
 
 snippet funh "method declaration with documentation" b
 /**
- * @brief ${7:TODO}`!p write_method_docstring(t, snip)`
+ * \brief ${7:TODO}`!p write_method_docstring(t, snip, 4, 3)`
  */
 ${2:virtual }${3:void}
 ${1:memberFunction}(${4:/*arguments*/})${5: const}${6};
@@ -199,7 +199,7 @@ endsnippet
 
 snippet funm "method implementation with documentation" b
 /**
- * @details TODO
+ * \details TODO
  */
 ${3:void}
 ${1:`!p snip.rv = ''.join(map(lambda x: x.capitalize(), snip.basename.split('_'))) or "classname"`}::
