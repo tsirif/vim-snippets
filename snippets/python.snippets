@@ -14,11 +14,15 @@ snippet from
 # Module Docstring
 snippet docs
 	"""
-	File: ${1:`vim_snippets#Filename('$1.py', 'foo.py')`}
-	Author: `g:snips_author`
-	Email: `g:snips_email`
-	Github: `g:snips_github`
-	Description: ${0}
+	:mod:\`${1:`vim_snippets#Filename('$1', 'foo')`}\` -- ${2:title}
+	===================================================================
+
+	.. module:: controller
+	   :platform: ${3:Unix}
+	   :synopsis: ${4:brief}
+
+	${0: Description}
+
 	"""
 
 snippet wh
