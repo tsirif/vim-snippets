@@ -136,6 +136,13 @@ def format_arg(arg, style):
 		return "%s : TODO" % arg
 
 
+def format_type(arg, style):
+	if style == DOXYGEN:
+		return "@type %s: TODO" % arg
+	else:
+		return ":type %s: TODO" % arg
+	# in other styles?
+
 def format_return(style):
 	if style == DOXYGEN:
 		return "@return: TODO"
@@ -143,7 +150,6 @@ def format_return(style):
 		return ":returns: TODO"
 	elif style == GOOGLE:
 		return "Returns: TODO"
-
 
 def write_docstring_args(args, snip):
 	if not args:
@@ -161,6 +167,7 @@ def write_docstring_args(args, snip):
 	else:
 		for arg in args:
 			snip += format_arg(arg, style)
+			snip += format_type(arg, style)
 
 
 def write_google_docstring_args(args, snip):
@@ -205,8 +212,9 @@ def write_init_body(args, parents, snip):
 	parents = [p.strip() for p in parents.split(",")]
 	parents = [p for p in parents if p != 'object']
 
-	for p in parents:
-		snip += p + ".__init__(self)"
+	# for p in parents:
+	#   snip += p + ".__init__(self)"
+	snip += "super("+ classname +", self).__init__()"
 
 	if parents:
 		snip.rv += '\n' + snip.mkline('', indent='')
@@ -260,7 +268,7 @@ class ${1:MyClass}(${2:object}):
 	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`
 
 	def __init__(self$4):
-		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined1.}`!p
+		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined.}`!p
 snip.rv = ""
 snip >> 2
 
@@ -271,7 +279,7 @@ if args:
 	snip.rv += '\n' + snip.mkline('', indent='')
 	snip += '{0}'.format(triple_quotes(snip))
 
-write_init_body(args, t[2], snip)
+write_init_body(args, t[1], t[2], snip)
 `
 		$0
 endsnippet
@@ -299,7 +307,7 @@ if args:
 	snip.rv += '\n' + snip.mkline('', indent='')
 	snip += triple_quotes(snip)
 
-write_init_body(args, t[2], snip)
+write_init_body(args, t[1], t[2], snip)
 `
 		$0
 endsnippet

@@ -74,29 +74,7 @@ snippet fr
 # mutable
 snippet mu
 	mutable
-##
-## Class
-# class
-snippet cl
-	class ${1:`vim_snippets#Filename('$1', 'name')`}
-	{
-	public:
-		$1(${2});
-		~$1();
 
-	private:
-		${0:/* data */}
-	};
-# member function implementation
-snippet mfun
-	${4:void} ${1:`vim_snippets#Filename('$1', 'ClassName')`}::${2:memberFunction}(${3}) {
-		${0}
-	}
-# namespace
-snippet ns
-	namespace ${1:`vim_snippets#Filename('', 'my')`} {
-		${0}
-	} /* namespace $1 */
 ##
 ## Input/Output
 # std::cout
@@ -120,21 +98,15 @@ snippet rca
 snippet cca
 	const_cast<${1:unsigned}>(${2:expr})${3}
 ## Iteration
-# for i
-snippet fori
-	for (int ${2:i} = 0; $2 < ${1:count}; $2${3:++}) {
-		${4}
-	}
-
 # foreach
 snippet fore
 	for (${1:auto} ${2:i} : ${3:container}) {
-		${4}
+		${VISUAL}${4}
 	}
 # iterator
 snippet iter
-	for (${1:std::vector}<${2:type}>::${3:const_iterator} ${4:i} = ${5:container}.begin(); $4 != $5.end(); ++$4) {
-		${6}
+	for (${1:typename}::${2:const_iterator} ${3:iter} = ${4:container}.begin(); $3 != $4.end(); ++$3) {
+		${VISUAL}${5}
 	}
 
 # auto iterator
